@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/neneprm/Desktop/C/FlappyBird/main.c
+stdio.h
+-
+raylib.h
+/Users/neneprm/Desktop/C/FlappyBird/raylib.h
+
+/usr/local/include/raylib.h
+stdarg.h
+-
+stdbool.h
+-
+
