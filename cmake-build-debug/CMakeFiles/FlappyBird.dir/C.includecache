@@ -11,6 +11,8 @@ stdio.h
 -
 raylib.h
 /Users/neneprm/Desktop/C/FlappyBird/raylib.h
+string.h
+-
 
 /usr/local/include/raylib.h
 stdarg.h
