@@ -1,85 +1,214 @@
 #include <stdio.h>
-#include <string.h>
 #include "raylib.h"
 
-static const char backgroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Background.png";
-static const char foregroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Foreground.png";
-static const char birdPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Bird.png";
+//------------------------------------------------------------------------------------
+// Types and Structures Definition
+//------------------------------------------------------------------------------------
 
-Texture2D background;
-Texture2D foreground;
-Texture2D bird;
-
-void loadTexture()
+typedef struct Bird
 {
-    background = LoadTexture(backgroundPath);
-    foreground = LoadTexture(foregroundPath);
-    bird = LoadTexture(birdPath);
-}
+    Texture2D birdSprite;
+} Bird;
 
-void unloadTexture()
+typedef struct Map
 {
-    UnloadTexture(background);
-    UnloadTexture(foreground);
-    UnloadTexture(bird);
-}
+    Texture2D background;
+    Texture2D foreground;
+} Map;
 
-int main()
+//------------------------------------------------------------------------------------
+// Structure variable
+//------------------------------------------------------------------------------------
+
+static Bird bird;
+static Map map;
+
+//------------------------------------------------------------------------------------
+// Global Variables Declaration
+//------------------------------------------------------------------------------------
+
+static const int screenWidth = 490;
+static const int screenHeight = 735;
+
+float backgroundY = -500;
+float foregroundY = 630;
+int currentFrame = 0;
+
+float scrollingBack = 0.0f;
+float scrollingFore = 0.0f;
+
+int framesCounter = 0;
+int framesSpeed = 8;
+
+float birdX, birdY;
+
+bool jump;
+int jumpTimer;
+
+
+//int isJumping;
+//int jump_delay;
+//int jump_check;
+
+//------------------------------------------------------------------------------------
+// Module Functions Declaration (local)
+//------------------------------------------------------------------------------------
+
+static void InitGame(void);
+//static void jump(void);
+static void drawGame(void);
+static void updateGame(void);
+static void loadTexture(void);
+static void unloadTexture(void);
+
+//------------------------------------------------------------------------------------
+// Program main entry point
+//------------------------------------------------------------------------------------
+
+int main(void)
 {
-    const int screenWidth = 490;
-    const int screenHeight = 735;
     InitWindow(screenWidth, screenHeight, "Flappy Bird");
-
-    float scrollingBack = 0.0f;
-    float scrollingFore = 0.0f;
-
-    Vector2 position = {215.0f,362.5f};
-    Rectangle  frameRec = {0.0f, 0.0f, (float)bird.width/3, (float)bird.height};
-    int currentFrame = 0;
-
-    int framesCounter = 0;
-    int framesSpeed = 8;
-
-    SetTargetFPS(60);
+//    Rectangle frameRec = {0.0f, 0.0f, (float) bird.birdSprite.width / 3, (float) bird.birdSprite.height};
     loadTexture();
-
+    SetTargetFPS(60);
+    InitGame();
     while (!WindowShouldClose())
     {
-        scrollingBack -= 0.1f;
-        scrollingFore -= 3.0f;
-        if (scrollingBack <= -(float)background.width*2) scrollingBack = 0;
-        if (scrollingFore <= -(float)foreground.width*2) scrollingFore = 0;
-
-        framesCounter++;
-        if (framesCounter >= (60/framesSpeed))
-        {
-            framesCounter = 0;
-            currentFrame++;
-
-            if (currentFrame > 2) currentFrame = 0;
-
-            frameRec.x = (float)currentFrame*(float)bird.width/3;
-        }
-
-
-        BeginDrawing();
-            ClearBackground(RAYWHITE);
-
-            DrawTextureEx(background, (struct Vector2){scrollingBack, -500}, 0.0f, 2.5f, WHITE);
-            DrawTextureEx(background, (struct Vector2){(float)background.width*2 + scrollingBack, -500}, 0.0f, 2.5f, WHITE);
-
-            DrawTextureEx(foreground, (struct Vector2){scrollingFore, 630}, 0.0f, 2.5f, WHITE);
-            DrawTextureEx(foreground, (struct Vector2){(float)foreground.width*2 + scrollingFore, 630}, 0.0f, 2.5f, WHITE);
-
-            DrawTextureRec(bird, (Rectangle){currentFrame * (bird.width / 3),0,bird.width/3,bird.height}, position, WHITE);
-
-        EndDrawing();
-
+        updateGame();
+        drawGame();
     }
-
     unloadTexture();
-
     CloseWindow();
 
     return 0;
+}
+
+void InitGame(void)
+{
+    birdX = 220.0f;
+    birdY = 362.5f;
+
+    Vector2 position = {birdX, birdY};
+
+//    isJumping = 0;
+//    jump_delay = 25;
+//
+//    jump_check = 0;
+}
+
+//void jump()
+//{
+//    if ( isJumping == 0 ) { birdY -= jump_delay; jump_delay--;}
+
+//    falling
+//    else if( isJumping == 1 )
+//    {
+//        if (birdY >= foregroundY) isJumping = 0;
+//        birdY += jump_delay;
+//        jump_delay++;
+//    }
+
+//    if( birdY == foregroundY)
+//    {  //Floor position -> at floor reset everything
+//        jump_delay = 30;
+//        isJumping = 0;
+//        jump_check = 0;
+//    }
+//}
+
+void drawGame(void)
+{
+    float frameWidth = (bird.birdSprite.width / 3);
+
+    BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        DrawTextureEx(map.background, (Vector2) {scrollingBack, backgroundY}, 0.0f, 2.5f, WHITE);
+        DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + scrollingBack, backgroundY}, 0.0f,
+                      2.5f, WHITE);
+
+        DrawTextureEx(map.foreground, (Vector2) {scrollingFore, foregroundY}, 0.0f, 2.5f, WHITE);
+        DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + scrollingFore, foregroundY}, 0.0f,
+                      2.5f, WHITE);
+
+        DrawTextureRec(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
+                                                     bird.birdSprite.height}, (Vector2) {birdX, birdY}, WHITE);
+
+    EndDrawing();
+}
+
+void updateGame(void)
+{
+    float frameWidth = (bird.birdSprite.width / 3);
+    Rectangle birdRec = {birdX, birdY, frameWidth, frameWidth };
+
+    Vector2 position = {birdX, birdY};
+
+    framesCounter++;
+    if (framesCounter >= (60 / framesSpeed))
+    {
+        framesCounter = 0;
+        currentFrame++;
+
+        if (currentFrame > 2) currentFrame = 0;
+
+        birdRec.x = (float) currentFrame * (float) bird.birdSprite.width / 3;
+    }
+
+    scrollingBack -= 0.1f;
+    scrollingFore -= 3.0f;
+    if (scrollingBack <= -(float) map.background.width * 2) scrollingBack = 0;
+    if (scrollingFore <= -(float) map.foreground.width * 2) scrollingFore = 0;
+
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        jump = true;
+    }
+
+    if (jump)
+    {
+        jumpTimer ++;
+        if (jumpTimer < 80)
+        {
+            position.y -= 30;
+        }
+        else
+        {
+            position.y += 30;
+        }
+    }
+
+    if (jumpTimer >= 160)
+    {
+        jumpTimer = 0;
+        jump = false;
+    }
+
+    //    if (IsKeyPressed(KEY_SPACE))
+//    {
+//        birdY -= 30.0f;
+//    }
+//        jump_check = 1;
+//    if (jump_check == 1) jump();
+//    birdY -= GetFrameTime() * 500.0f;
+//    birdY += GetFrameTime() * 100.0f;
+//    if (IsKeyPressed(KEY_SPACE)) birdY -= GetFrameTime() * 2000.0f;
+}
+
+void loadTexture(void)
+{
+    static const char backgroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Background.png";
+    static const char foregroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Foreground.png";
+    static const char birdPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Bird.png";
+
+    map.background = LoadTexture(backgroundPath);
+    map.foreground = LoadTexture(foregroundPath);
+    bird.birdSprite = LoadTexture(birdPath);
+}
+
+void unloadTexture(void)
+{
+    UnloadTexture(map.background);
+    UnloadTexture(map.foreground);
+    UnloadTexture(bird.birdSprite);
 }
