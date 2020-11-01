@@ -45,6 +45,7 @@ float birdX, birdY;
 bool jump;
 int jumpTimer;
 
+int counter = 15;
 
 //int isJumping;
 //int jump_delay;
@@ -170,11 +171,11 @@ void updateGame(void)
         jumpTimer ++;
         if (jumpTimer < 80)
         {
-            position.y -= 30;
+            birdY -= (1 * counter--);
         }
         else
         {
-            position.y += 30;
+            birdY += (1 * counter--);
         }
     }
 
@@ -182,6 +183,7 @@ void updateGame(void)
     {
         jumpTimer = 0;
         jump = false;
+        counter = 15;
     }
 
     //    if (IsKeyPressed(KEY_SPACE))
@@ -197,9 +199,9 @@ void updateGame(void)
 
 void loadTexture(void)
 {
-    static const char backgroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Background.png";
-    static const char foregroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Foreground.png";
-    static const char birdPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Bird.png";
+    static const char backgroundPath[] = "/Users/pitchakorn/Desktop/prmproj/CProject-1/assets/Background.png";
+    static const char foregroundPath[] = "/Users/pitchakorn/Desktop/prmproj/CProject-1/Foreground.png";
+    static const char birdPath[] = "/Users/pitchakorn/Desktop/prmproj/CProject-1/assets/Bird.png";
 
     map.background = LoadTexture(backgroundPath);
     map.foreground = LoadTexture(foregroundPath);

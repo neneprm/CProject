@@ -8,86 +8,88 @@
 		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\raylib\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug"/>
+				<Option working_dir="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug"/>
+				<Option working_dir="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug"/>
+				<Option working_dir="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="FlappyBird">
-				<Option output="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/FlappyBird" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug"/>
+				<Option output="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/FlappyBird" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/Cellar/raylib/2.5.0/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 FlappyBird"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 FlappyBird"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="FlappyBird/fast">
-				<Option output="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/FlappyBird" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug"/>
+				<Option output="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/FlappyBird" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/Cellar/raylib/2.5.0/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 FlappyBird/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 FlappyBird/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/neneprm/Desktop/C/FlappyBird/main.c">
+		<Unit filename="/Users/pitchakorn/Desktop/prmproj/CProject-1/main.c">
 			<Option target="FlappyBird"/>
 		</Unit>
-		<Unit filename="/Users/neneprm/Desktop/C/FlappyBird/CMakeLists.txt">
+		<Unit filename="/Users/pitchakorn/Desktop/prmproj/CProject-1/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/Users/neneprm/Desktop/C/FlappyBird/../../../../../usr/local/lib/cmake/raylib/raylib-config-version.cmake">
+		<Unit filename="/Users/pitchakorn/Desktop/prmproj/CProject-1/../../../../../usr/local/lib/cmake/raylib/raylib-config-version.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\raylib\"/>
 		</Unit>
-		<Unit filename="/Users/neneprm/Desktop/C/FlappyBird/../../../../../usr/local/lib/cmake/raylib/raylib-config.cmake">
+		<Unit filename="/Users/pitchakorn/Desktop/prmproj/CProject-1/../../../../../usr/local/lib/cmake/raylib/raylib-config.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\raylib\"/>
 		</Unit>
 	</Project>
