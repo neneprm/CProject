@@ -32,30 +32,32 @@ static const int screenHeight = 735;
 
 float backgroundY = -500;
 float foregroundY = 630;
+
 int currentFrame = 0;
 
 float scrollingBack = 0.0f;
 float scrollingFore = 0.0f;
-
 int framesCounter = 0;
 int framesSpeed = 8;
 
+float rotation = 0.0f;
+
 float birdX, birdY;
 
-bool jump;
-int jumpTimer;
+int isJumping;
+float velocity;
+float acceleration;
+float gravity;
 
-
-//int isJumping;
-//int jump_delay;
-//int jump_check;
+float ceiling;
+float ground;
 
 //------------------------------------------------------------------------------------
 // Module Functions Declaration (local)
 //------------------------------------------------------------------------------------
 
 static void InitGame(void);
-//static void jump(void);
+static void jump(void);
 static void drawGame(void);
 static void updateGame(void);
 static void loadTexture(void);
@@ -65,10 +67,9 @@ static void unloadTexture(void);
 // Program main entry point
 //------------------------------------------------------------------------------------
 
-int main(void)
+int main()
 {
     InitWindow(screenWidth, screenHeight, "Flappy Bird");
-//    Rectangle frameRec = {0.0f, 0.0f, (float) bird.birdSprite.width / 3, (float) bird.birdSprite.height};
     loadTexture();
     SetTargetFPS(60);
     InitGame();
@@ -83,56 +84,64 @@ int main(void)
     return 0;
 }
 
+//------------------------------------------------------------------------------------
+// Initializing variable
+//------------------------------------------------------------------------------------
 void InitGame(void)
 {
     birdX = 220.0f;
     birdY = 362.5f;
 
-    Vector2 position = {birdX, birdY};
+    isJumping = 0;
+    velocity = 0.0f;
+    acceleration = 0.0f;
+    gravity = 100.0f;
 
-//    isJumping = 0;
-//    jump_delay = 25;
-//
-//    jump_check = 0;
+    ceiling = 30.0f;
+    ground = 630.0f;
 }
 
-//void jump()
-//{
-//    if ( isJumping == 0 ) { birdY -= jump_delay; jump_delay--;}
+void jump(void)
+{
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        acceleration = 10.0f;
+        velocity = -gravity / 1.5f;
+        rotation = -35;
+    }
+    else
+    {
+        acceleration += gravity * GetFrameTime();
+        rotation ++;
+    }
 
-//    falling
-//    else if( isJumping == 1 )
-//    {
-//        if (birdY >= foregroundY) isJumping = 0;
-//        birdY += jump_delay;
-//        jump_delay++;
-//    }
+    if (acceleration >= gravity) acceleration = gravity;
 
-//    if( birdY == foregroundY)
-//    {  //Floor position -> at floor reset everything
-//        jump_delay = 30;
-//        isJumping = 0;
-//        jump_check = 0;
-//    }
-//}
+    velocity += acceleration * GetFrameTime() * 10;
+    birdY += velocity * GetFrameTime() * 5;
+}
 
 void drawGame(void)
 {
     float frameWidth = (bird.birdSprite.width / 3);
 
     BeginDrawing();
-        ClearBackground(RAYWHITE);
+    ClearBackground(RAYWHITE);
 
-        DrawTextureEx(map.background, (Vector2) {scrollingBack, backgroundY}, 0.0f, 2.5f, WHITE);
-        DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + scrollingBack, backgroundY}, 0.0f,
-                      2.5f, WHITE);
+    DrawTextureEx(map.background, (Vector2) {scrollingBack, backgroundY}, 0.0f, 2.5f, WHITE);
+    DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + scrollingBack, backgroundY}, 0.0f,
+                  2.5f, WHITE);
 
-        DrawTextureEx(map.foreground, (Vector2) {scrollingFore, foregroundY}, 0.0f, 2.5f, WHITE);
-        DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + scrollingFore, foregroundY}, 0.0f,
-                      2.5f, WHITE);
+    DrawTextureEx(map.foreground, (Vector2) {scrollingFore, foregroundY}, 0.0f, 2.5f, WHITE);
+    DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + scrollingFore, foregroundY}, 0.0f,
+                  2.5f, WHITE);
 
-        DrawTextureRec(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
-                                                     bird.birdSprite.height}, (Vector2) {birdX, birdY}, WHITE);
+//    DrawTextureRec(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
+//                                                 bird.birdSprite.height}, (Vector2) {birdX, birdY}, WHITE);
+
+    DrawTexturePro(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
+                                                 bird.birdSprite.height}, (Rectangle) {birdX + (birdX/3), birdY, frameWidth, bird.birdSprite.height},
+                                                (Vector2){frameWidth, bird.birdSprite.height} , rotation, WHITE);
 
     EndDrawing();
 }
@@ -141,8 +150,6 @@ void updateGame(void)
 {
     float frameWidth = (bird.birdSprite.width / 3);
     Rectangle birdRec = {birdX, birdY, frameWidth, frameWidth };
-
-    Vector2 position = {birdX, birdY};
 
     framesCounter++;
     if (framesCounter >= (60 / framesSpeed))
@@ -160,39 +167,13 @@ void updateGame(void)
     if (scrollingBack <= -(float) map.background.width * 2) scrollingBack = 0;
     if (scrollingFore <= -(float) map.foreground.width * 2) scrollingFore = 0;
 
-    if (IsKeyPressed(KEY_SPACE))
+    if (IsKeyPressed(KEY_SPACE)) isJumping = 1;
+    if (isJumping == 1)
     {
-        jump = true;
+        if (birdY < ground && birdY > ceiling) jump();
+        else if (birdY == ground || birdY == ceiling) isJumping = 0; //isJumping should change to be Game Over
     }
 
-    if (jump)
-    {
-        jumpTimer ++;
-        if (jumpTimer < 80)
-        {
-            position.y -= 30;
-        }
-        else
-        {
-            position.y += 30;
-        }
-    }
-
-    if (jumpTimer >= 160)
-    {
-        jumpTimer = 0;
-        jump = false;
-    }
-
-    //    if (IsKeyPressed(KEY_SPACE))
-//    {
-//        birdY -= 30.0f;
-//    }
-//        jump_check = 1;
-//    if (jump_check == 1) jump();
-//    birdY -= GetFrameTime() * 500.0f;
-//    birdY += GetFrameTime() * 100.0f;
-//    if (IsKeyPressed(KEY_SPACE)) birdY -= GetFrameTime() * 2000.0f;
 }
 
 void loadTexture(void)
