@@ -168,12 +168,10 @@ void updateGame(void)
     if (scrollingFore <= -(float) map.foreground.width * 2) scrollingFore = 0;
 
     if (IsKeyPressed(KEY_SPACE)) isJumping = 1;
-    if (isJumping == 1)
-    {
+    if (isJumping == 1) {
         if (birdY < ground && birdY > ceiling) jump();
         else if (birdY == ground || birdY == ceiling) isJumping = 0; //isJumping should change to be Game Over
     }
-
 }
 
 void loadTexture(void)

@@ -55,19 +55,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake
+CMAKE_COMMAND = "/Users/pitchakorn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/202.6397.106/CLion.app/Contents/bin/cmake/mac/bin/cmake"
 
 # The command to remove a file.
-RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
+RM = "/Users/pitchakorn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/202.6397.106/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/neneprm/Desktop/C/FlappyBird
+CMAKE_SOURCE_DIR = /Users/pitchakorn/Desktop/prmproj/CProject-1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -94,14 +94,14 @@ clean: CMakeFiles/FlappyBird.dir/clean
 CMakeFiles/FlappyBird.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlappyBird.dir/build.make CMakeFiles/FlappyBird.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlappyBird.dir/build.make CMakeFiles/FlappyBird.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target FlappyBird"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target FlappyBird"
 .PHONY : CMakeFiles/FlappyBird.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/FlappyBird.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/CMakeFiles 2
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/FlappyBird.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/FlappyBird.dir/rule
 
 # Convenience name for target.
