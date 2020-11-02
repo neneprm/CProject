@@ -5,23 +5,63 @@
 // Types and Structures Definition
 //------------------------------------------------------------------------------------
 
-typedef struct Bird
-{
-    Texture2D birdSprite;
-} Bird;
-
 typedef struct Map
 {
     Texture2D background;
     Texture2D foreground;
+
+    float backgroundY;
+    float foregroundY;
+
+    float scrollingBack;
+    float scrollingFore;
+    int framesCounter;
+    int framesSpeed;
+
+    float ceiling;
+    float ground;
+
 } Map;
+
+typedef struct Bird
+{
+    Texture2D birdSprite;
+    float frameWidth;
+    float x, y;
+
+    float rotation;
+
+    int isJumping;
+    float velocity;
+    float acceleration;
+    float gravity;
+
+} Bird;
+
+typedef struct Pipe
+{
+    Texture2D topPipe;
+    Texture2D bottomPipe;
+
+    float topPipe_frameWidth;
+    float topPipe_frameHeight;
+
+    float bottomPipe_frameWidth;
+    float bottomPipe_frameHeight;
+
+    float x, topY, bottomY;
+    float topY_min, topY_max;
+    float bottomY_min, bottomY_max;
+
+} Pipe;
 
 //------------------------------------------------------------------------------------
 // Structure variable
 //------------------------------------------------------------------------------------
 
-static Bird bird;
 static Map map;
+static Bird bird;
+static Pipe pipe;
 
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
@@ -30,27 +70,7 @@ static Map map;
 static const int screenWidth = 490;
 static const int screenHeight = 735;
 
-float backgroundY = -500;
-float foregroundY = 630;
-
 int currentFrame = 0;
-
-float scrollingBack = 0.0f;
-float scrollingFore = 0.0f;
-int framesCounter = 0;
-int framesSpeed = 8;
-
-float rotation = 0.0f;
-
-float birdX, birdY;
-
-int isJumping;
-float velocity;
-float acceleration;
-float gravity;
-
-float ceiling;
-float ground;
 
 //------------------------------------------------------------------------------------
 // Module Functions Declaration (local)
@@ -89,72 +109,119 @@ int main()
 //------------------------------------------------------------------------------------
 void InitGame(void)
 {
-    birdX = 220.0f;
-    birdY = 362.5f;
+    map.backgroundY = -500;
+    map.foregroundY = 630;
 
-    isJumping = 0;
-    velocity = 0.0f;
-    acceleration = 0.0f;
-    gravity = 100.0f;
+    map.scrollingBack = 0.0f;
+    map.scrollingFore = 0.0f;
+    map.framesCounter = 0;
+    map.framesSpeed = 8;
 
-    ceiling = 30.0f;
-    ground = 630.0f;
+    map.ceiling = 30.0f;
+    map.ground = 620.0f;
+
+    bird.frameWidth = (bird.birdSprite.width / 3);
+
+    bird.x = 220.0f;
+    bird.y = 362.5f;
+
+    bird.rotation = 0.0f;
+
+    bird.isJumping = 0;
+    bird.velocity = 0.0f;
+    bird.acceleration = 0.0f;
+    bird.gravity = 100.0f;
+
+
+    pipe.topPipe_frameWidth = (float) pipe.topPipe.width * 2.5;
+    pipe.topPipe_frameHeight = (float) pipe.topPipe.height * 2.5;
+
+    pipe.bottomPipe_frameWidth = (float) pipe.bottomPipe.width * 2.5;
+    pipe.bottomPipe_frameHeight = (float) pipe.bottomPipe.height * 2.5;
+
+    pipe.x = 330 * 3;
+
+    pipe.topY_min = -(pipe.topPipe_frameHeight) + (bird.birdSprite.height * 2);
+    pipe.topY_max = 0;
+    pipe.topY = GetRandomValue(pipe.topY_min,pipe.topY_max);
+//    float topY_val = pipe.topY;
+
+    pipe.bottomY_min = (pipe.bottomPipe_frameHeight) + (bird.birdSprite.height * 3);
+    pipe.bottomY_max = -(pipe.bottomPipe_frameHeight - map.foregroundY - bird.birdSprite.height/2);
+    pipe.bottomY = GetRandomValue(pipe.bottomY_min, pipe.bottomY_max);
+//    float bottomY_val = pipe.bottomY;
+
+    float distanceTop = pipe.bottomY_min - pipe.topY_max;
+    float distanceBottom = pipe.topY_min - pipe.bottomY_max;
+
+//pipe.topY_max, pipe.bottomY_min
+//pipe.topY_min, pipe.bottomY_max
+
+//    if((pipe.topY && pipe.bottomY) <= (distanceTop || distanceBottom))
+//        pipe.topY = topY_val;
+//        pipe.bottomY = bottomY_val;
 }
 
 void jump(void)
 {
     if (IsKeyPressed(KEY_SPACE))
     {
-        acceleration = 10.0f;
-        velocity = -gravity / 1.5f;
-        rotation = -35;
+        bird.acceleration = 10.0f;
+        bird.velocity = -bird.gravity / 1.5f;
+        bird.rotation = -35;
     }
     else
     {
-        acceleration += gravity * GetFrameTime();
-        rotation ++;
+        bird.acceleration += bird.gravity * GetFrameTime();
+        bird.rotation ++;
     }
 
-    if (acceleration >= gravity) acceleration = gravity;
+    if (bird.acceleration >= bird.gravity) bird.acceleration = bird.gravity;
 
-    velocity += acceleration * GetFrameTime() * 10;
-    birdY += velocity * GetFrameTime() * 5;
+    bird.velocity += bird.acceleration * GetFrameTime() * 10;
+    bird.y += bird.velocity * GetFrameTime() * 5;
 }
 
 void drawGame(void)
 {
-    float frameWidth = (bird.birdSprite.width / 3);
-
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawTextureEx(map.background, (Vector2) {scrollingBack, backgroundY}, 0.0f, 2.5f, WHITE);
-    DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + scrollingBack, backgroundY}, 0.0f,
+    DrawTextureEx(map.background, (Vector2) {map.scrollingBack, map.backgroundY}, 0.0f, 2.5f, WHITE);
+    DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + map.scrollingBack, map.backgroundY}, 0.0f,
                   2.5f, WHITE);
 
-    DrawTextureEx(map.foreground, (Vector2) {scrollingFore, foregroundY}, 0.0f, 2.5f, WHITE);
-    DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + scrollingFore, foregroundY}, 0.0f,
-                  2.5f, WHITE);
+    DrawTextureEx(pipe.topPipe, (Vector2){pipe.x,pipe.topY}, 0.0f, 2.5f, WHITE);
+    DrawTextureEx(pipe.bottomPipe, (Vector2){pipe.x,pipe.bottomY}, 0.0f, 2.5f, WHITE);
+
+    DrawTextureEx(map.foreground, (Vector2) {map.scrollingFore, map.foregroundY}, 0.0f, 2.5f, WHITE);
+    DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + map.scrollingFore, map.foregroundY},
+                  0.0f,2.5f, WHITE);
 
 //    DrawTextureRec(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
 //                                                 bird.birdSprite.height}, (Vector2) {birdX, birdY}, WHITE);
 
-    DrawTexturePro(bird.birdSprite, (Rectangle) {currentFrame * frameWidth, 0, frameWidth,
-                                                 bird.birdSprite.height}, (Rectangle) {birdX + (birdX/3), birdY, frameWidth, bird.birdSprite.height},
-                                                (Vector2){frameWidth, bird.birdSprite.height} , rotation, WHITE);
+    DrawTexturePro(bird.birdSprite, (Rectangle) {currentFrame * bird.frameWidth, 0, bird.frameWidth,
+                                                 bird.birdSprite.height}, (Rectangle) {bird.x + (bird.x/3), bird.y,bird.frameWidth, bird.birdSprite.height},
+                   (Vector2){bird.frameWidth, bird.birdSprite.height} , bird.rotation, WHITE);
+
+    DrawRectangle(bird.x, bird.y - bird.birdSprite.height, bird.frameWidth, bird.birdSprite.height, RED);
+    DrawRectangle(pipe.x, pipe.topY,pipe.topPipe_frameWidth, pipe.topPipe_frameHeight, BLUE);
+    DrawRectangle(pipe.x, pipe.bottomY,pipe.bottomPipe_frameWidth, pipe.bottomPipe_frameHeight, BLUE);
 
     EndDrawing();
 }
 
 void updateGame(void)
 {
-    float frameWidth = (bird.birdSprite.width / 3);
-    Rectangle birdRec = {birdX, birdY, frameWidth, frameWidth };
+    Rectangle birdRec = {bird.x, bird.y - bird.birdSprite.height, bird.frameWidth, bird.birdSprite.height};
+    Rectangle topPipeRec = {pipe.x, pipe.topY,pipe.topPipe_frameWidth, pipe.topPipe_frameHeight};
+    Rectangle bottomPipeRec = {pipe.x, pipe.bottomY,pipe.bottomPipe_frameWidth, pipe.bottomPipe_frameHeight};
 
-    framesCounter++;
-    if (framesCounter >= (60 / framesSpeed))
+    map.framesCounter++;
+    if (map.framesCounter >= (60 / map.framesSpeed))
     {
-        framesCounter = 0;
+        map.framesCounter = 0;
         currentFrame++;
 
         if (currentFrame > 2) currentFrame = 0;
@@ -162,15 +229,21 @@ void updateGame(void)
         birdRec.x = (float) currentFrame * (float) bird.birdSprite.width / 3;
     }
 
-    scrollingBack -= 0.1f;
-    scrollingFore -= 3.0f;
-    if (scrollingBack <= -(float) map.background.width * 2) scrollingBack = 0;
-    if (scrollingFore <= -(float) map.foreground.width * 2) scrollingFore = 0;
+    map.scrollingBack -= 0.1f;
+    map.scrollingFore -= 3.0f;
+    if (map.scrollingBack <= -(float) map.background.width * 2) map.scrollingBack = 0;
+    if (map.scrollingFore <= -(float) map.foreground.width * 2) map.scrollingFore = 0;
 
-    if (IsKeyPressed(KEY_SPACE)) isJumping = 1;
-    if (isJumping == 1) {
-        if (birdY < ground && birdY > ceiling) jump();
-        else if (birdY == ground || birdY == ceiling) isJumping = 0; //isJumping should change to be Game Over
+    if (IsKeyPressed(KEY_SPACE))bird.isJumping = 1;
+
+    if (bird.isJumping == 1) {
+        pipe.x -= 3;
+        if (bird.y < map.ground && bird.y > map.ceiling) jump();
+        else if (bird.y == map.ground || bird.y == map.ceiling) bird.isJumping = 0; //isJumping should change to be Game Over
+    }
+
+    if (CheckCollisionRecs (birdRec, topPipeRec) || CheckCollisionRecs (birdRec, bottomPipeRec)){
+        printf("Collide\n");
     }
 }
 
@@ -179,10 +252,14 @@ void loadTexture(void)
     static const char backgroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Background.png";
     static const char foregroundPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Foreground.png";
     static const char birdPath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/Bird.png";
+    static const char topPipePath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/topPipe.png";
+    static const char bottomPipePath[] = "/Users/neneprm/Desktop/C/FlappyBird/assets/bottomPipe.png";
 
     map.background = LoadTexture(backgroundPath);
     map.foreground = LoadTexture(foregroundPath);
     bird.birdSprite = LoadTexture(birdPath);
+    pipe.topPipe = LoadTexture(topPipePath);
+    pipe.bottomPipe = LoadTexture(bottomPipePath);
 }
 
 void unloadTexture(void)
@@ -190,4 +267,6 @@ void unloadTexture(void)
     UnloadTexture(map.background);
     UnloadTexture(map.foreground);
     UnloadTexture(bird.birdSprite);
+    UnloadTexture(pipe.topPipe);
+    UnloadTexture(pipe.bottomPipe);
 }

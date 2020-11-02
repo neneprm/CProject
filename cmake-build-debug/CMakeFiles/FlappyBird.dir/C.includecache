@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/Users/pitchakorn/Desktop/prmproj/CProject-1/main.c
+/Users/neneprm/Desktop/C/FlappyBird/main.c
 stdio.h
 -
 raylib.h
-/Users/pitchakorn/Desktop/prmproj/CProject-1/raylib.h
+/Users/neneprm/Desktop/C/FlappyBird/raylib.h
 
-/usr/local/Cellar/raylib/2.5.0/include/raylib.h
+/usr/local/include/raylib.h
 stdarg.h
 -
 stdbool.h

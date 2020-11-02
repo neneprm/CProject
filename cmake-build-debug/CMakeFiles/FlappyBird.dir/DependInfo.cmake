@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/pitchakorn/Desktop/prmproj/CProject-1/main.c" "/Users/pitchakorn/Desktop/prmproj/CProject-1/cmake-build-debug/CMakeFiles/FlappyBird.dir/main.c.o"
+  "/Users/neneprm/Desktop/C/FlappyBird/main.c" "/Users/neneprm/Desktop/C/FlappyBird/cmake-build-debug/CMakeFiles/FlappyBird.dir/main.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
-  "/usr/local/Cellar/raylib/2.5.0/include"
+  "/usr/local/include"
   )
 
 # Targets to which this target links.
