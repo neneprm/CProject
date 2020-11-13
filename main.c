@@ -1,5 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "raylib.h"
+
+//------------------------------------------------------------------------------------
+// Defines Variables
+//------------------------------------------------------------------------------------
+
 #define MAX_PIPES 100
 #define DIST_PIPE 300
 
@@ -45,8 +52,8 @@ typedef struct Pipe
     Texture2D topPipe;
     Texture2D bottomPipe;
 
-    Rectangle topPipeRec;       //hitboxtoppipe
-    Rectangle bottomPipeRec;    //hitboxbottompipe
+    Rectangle topPipeRec;       // Top pipe hitbox
+    Rectangle bottomPipeRec;    // Bottom pipe hitbox
 
     float x, topY, bottomY;
 
@@ -59,11 +66,12 @@ typedef struct Effect
     Sound hit;
     Sound jump;
     Sound point;
+    Sound bgMusic;
 
 } Effect;
 
 //------------------------------------------------------------------------------------
-// Structure variable
+// Structure Variables
 //------------------------------------------------------------------------------------
 
 static Map map;
@@ -75,23 +83,30 @@ static Effect effect;
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
 
+// Window Variables
+//------------------------------------------
 bool gameStart;
 bool gameOver;
 int gameRun;
 
+static const int screenWidth = 490;
+static const int screenHeight = 735;
+
+// Graphic Variables
+//------------------------------------------
+int currentFrame = 0;
 Texture2D gameOverSprite;
 Texture2D scoreBoard;
 Texture2D title;
 
+// Scoring and Speed Variables
+//------------------------------------------
 static int score;
 static int hiScore;
 static float speed;
 
-static const int screenWidth = 490;
-static const int screenHeight = 735;
-
-int currentFrame = 0;
-
+// Pipe Variables
+//------------------------------------------
 float topPipe_frameWidth;
 float topPipe_frameHeight;
 
@@ -102,34 +117,47 @@ float bottomPipe_frameHeight;
 // Module Functions Declaration (local)
 //------------------------------------------------------------------------------------
 
-static void InitGame(void);
-static void jump(void);
-static void drawGame(void);
-static void updateGame(void);
-static void loadTexture(void);
-static void unloadTexture(void);
-static void loadSound(void);
-static void unloadSound(void);
+static void InitGame(void);     // Initialize game variables
+static void jump(void);         // Make character jumps
+static void drawGame(void);     // Draw graphics in the game
+static void updateGame(void);   // Update the game when a player runs the program
+static void loadTexture(void);  // Load game textures from image data: map, bird, pipe, etc.
+static void unloadTexture(void);// Unload game textures from memory
+static void loadSound(void);    // Load sound effects of the game
+static void unloadSound(void);  // Unload sound effects
+static void loadHiScore(void);  // Load high score
+static void recHiScore(void);   // Record new high score
 
 //------------------------------------------------------------------------------------
-// Program main entry point
+// Program Main Entry Point
 //------------------------------------------------------------------------------------
 
 int main()
 {
+    // Initialization
+    //------------------------------------------
     InitWindow(screenWidth, screenHeight, "Flappy Bird");
     InitAudioDevice();
+
     loadTexture();
     loadSound();
-    SetTargetFPS(60);
+
     InitGame();
+    SetTargetFPS(60);
+
+    // Main Game Loop
+    //------------------------------------------
     while (!WindowShouldClose())
     {
         updateGame();
         drawGame();
     }
+
+    // De-Initialization
+    //------------------------------------------
     unloadTexture();
     unloadSound();
+
     CloseAudioDevice();
     CloseWindow();
 
@@ -137,17 +165,19 @@ int main()
 }
 
 //------------------------------------------------------------------------------------
-// Initializing variable
+// Initialize Game Variables
 //------------------------------------------------------------------------------------
 
 void InitGame(void)
 {
+    loadHiScore();
+    PlaySound(effect.bgMusic);
+
     gameStart = true;
     gameOver = false;
     gameRun = 0;
 
     score = 0;
-    hiScore = 0;
     speed = 3.0;
 
     map.backgroundY = -500;
@@ -203,6 +233,10 @@ void InitGame(void)
     }
 }
 
+//------------------------------------------------------------------------------------
+// Character's Jump Function
+//------------------------------------------------------------------------------------
+
 void jump(void)
 {
     if (IsKeyPressed(KEY_SPACE))
@@ -222,6 +256,10 @@ void jump(void)
     bird.velocity += bird.acceleration * GetFrameTime() * 10;
     bird.y += bird.velocity * GetFrameTime() * 5;
 }
+
+//------------------------------------------------------------------------------------
+// Draw Game Graphics Function
+//------------------------------------------------------------------------------------
 
 void drawGame(void)
 {
@@ -252,7 +290,7 @@ void drawGame(void)
             {
                 DrawTextureEx(pipe[i].topPipe, (Vector2) {pipe[i].x, pipe[i].topY}, 0.0f, 2.5f, WHITE);
                 DrawTextureEx(pipe[i].bottomPipe, (Vector2) {pipe[i].x, pipe[i].bottomY}, 0.0f, 2.5f, WHITE);
-
+                  // Pipes Hitblock Check
 //                DrawRectangle(pipe[i].topPipeRec.x, pipe[i].topPipeRec.y, topPipe_frameWidth, topPipe_frameHeight, BLUE);
 //                DrawRectangle(pipe[i].bottomPipeRec.x, pipe[i].bottomPipeRec.y, bottomPipe_frameWidth, bottomPipe_frameHeight, MAROON);
             }
@@ -266,9 +304,9 @@ void drawGame(void)
                            (Rectangle) {currentFrame * bird.frameWidth, 0, bird.frameWidth, bird.birdSprite.height},
                            (Rectangle) {bird.x + (bird.x / 3), bird.y, bird.frameWidth, bird.birdSprite.height},
                            (Vector2) {bird.frameWidth, bird.birdSprite.height}, bird.rotation, WHITE);
-
+              // Bird Hitblock Check
 //            DrawRectangle(bird.x+5, bird.y - bird.birdSprite.height+15, bird.frameWidth-10, bird.birdSprite.height-10, RED);
-//
+              // Ground and Ceiling Hitblock Check
 //            DrawRectangle(bird.x, map.foregroundY, bird.frameWidth-10, map.foreground.height, PURPLE);
 //            DrawRectangle(bird.x, -50, bird.frameWidth-10, map.foreground.height, PURPLE);
 
@@ -304,8 +342,14 @@ void drawGame(void)
     EndDrawing();
 }
 
+//------------------------------------------------------------------------------------
+// Update Game Function
+//------------------------------------------------------------------------------------
+
 void updateGame(void)
 {
+    // Local Variables
+    //------------------------------------------
     map.scrollingBack -= 0.1f;
     map.scrollingFore -= 3.0f;
     if (map.scrollingBack <= -(float) map.background.width * 2) map.scrollingBack = 0;
@@ -317,6 +361,8 @@ void updateGame(void)
 
     if (!gameOver)
     {
+        // Map Scrolling, Character and Pipes Position
+        //------------------------------------------
         map.framesCounter++;
         if (map.framesCounter >= (60 / map.framesSpeed))
         {
@@ -328,7 +374,7 @@ void updateGame(void)
             birdRec.x = (float) currentFrame * (float) bird.birdSprite.width / 3;
         }
 
-        if (!gameOver && IsKeyPressed(KEY_SPACE))
+        if (!gameOver && IsKeyPressed(KEY_SPACE))       // Character jumps when Space Bar is pressed
         {
             bird.isJumping = 1;
             PlaySound(effect.jump);
@@ -346,17 +392,22 @@ void updateGame(void)
             if (bird.y < map.ground && bird.y > map.ceiling) jump();
         }
 
+        // Check for Collision
+        //------------------------------------------
+        // Collision between the character and map's ground/ceiling
         if (CheckCollisionRecs(birdRec, topRec) || CheckCollisionRecs(birdRec, bottomRec))
         {
             PlaySound(effect.hit);
+            StopSound(effect.bgMusic);
             gameOver = true;
         }
-
+        // Collision between the character and top/bottom pipes
         for(int i = 0; i < MAX_PIPES; i++)
         {
             if ((CheckCollisionRecs(birdRec, pipe[i].topPipeRec) || CheckCollisionRecs(birdRec, pipe[i].bottomPipeRec)) && pipe[i].active)
             {
                 PlaySound(effect.hit);
+                StopSound(effect.bgMusic);
                 gameOver = true;
             }
             else if ((pipe[i].topPipeRec.x + pipe[i].topPipeRec.width < birdRec.x) && (pipe[i].bottomPipeRec.x + pipe[i].bottomPipeRec.width< bird.x) && !gameOver && pipe[i].active)
@@ -367,11 +418,19 @@ void updateGame(void)
             }
         }
 
-        if (score % 5 == 0 && score != 0) speed += 0.005f;
-        if (score > hiScore) hiScore = score;
+        // Scoring and Speed
+        //------------------------------------------
+        if (score % 5 == 0 && score != 0) speed += 0.005f;        // Increases speed every 5 points gain
+        if (score > hiScore)                                      // Set and record high score
+        {
+            hiScore = score;
+            recHiScore();
+        }
     }
     else
     {
+        // Game Over
+        //------------------------------------------
         if (bird.rotation <= 30) bird.rotation += 4;
         bird.acceleration += bird.gravity * GetFrameTime();
 
@@ -382,9 +441,15 @@ void updateGame(void)
 
         if (CheckCollisionRecs(birdRec, bottomRec)) bird.y = bottomRec.y + 15;
 
+        // Restart the Game
+        //------------------------------------------
         if (IsKeyPressed(KEY_ENTER)) InitGame();
     }
 }
+
+//------------------------------------------------------------------------------------
+// Game Textures Functions
+//------------------------------------------------------------------------------------
 
 void loadTexture(void)
 {
@@ -425,15 +490,23 @@ void unloadTexture(void)
     UnloadTexture(title);
 }
 
+//------------------------------------------------------------------------------------
+// Sound Effects Functions
+//------------------------------------------------------------------------------------
+
 void loadSound(void)
 {
     static const char hitPath[] = "/Users/neneprm/Desktop/C/FlappyBird/effect/hit.mp3";
     static const char jumpPath[] = "/Users/neneprm/Desktop/C/FlappyBird/effect/jump.mp3";
     static const char pointPath[] = "/Users/neneprm/Desktop/C/FlappyBird/effect/point.mp3";
+    static const char bgMusicPath[] = "/Users/neneprm/Desktop/C/FlappyBird/effect/bgMusic.mp3";
 
     effect.hit = LoadSound(hitPath);
     effect.jump = LoadSound(jumpPath);
     effect.point = LoadSound(pointPath);
+    effect.bgMusic = LoadSound(bgMusicPath);
+
+    SetSoundVolume(effect.jump, 0.3);
 }
 
 void unloadSound(void)
@@ -441,4 +514,34 @@ void unloadSound(void)
     UnloadSound(effect.hit);
     UnloadSound(effect.jump);
     UnloadSound(effect.point);
+    UnloadSound(effect.bgMusic);
+}
+
+//------------------------------------------------------------------------------------
+// High Score Functions
+//------------------------------------------------------------------------------------
+
+void loadHiScore(void)
+{
+    FILE *inFile;
+    inFile = fopen("hiScore.txt", "r");
+    if (inFile == NULL)
+    {
+        printf("Could Not Open File!\n");
+        exit(-1);
+    }
+    else
+    {
+        fscanf(inFile, "%d", &hiScore);
+        printf("%d\n",hiScore);
+    }
+    fclose(inFile);
+}
+
+void recHiScore(void)
+{
+    FILE *outFile;
+    outFile = fopen("hiScore.txt", "w");
+    if (outFile != NULL) fprintf(outFile, "%d", hiScore);
+    fclose(outFile);
 }

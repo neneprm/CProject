@@ -9,6 +9,10 @@
 /Users/neneprm/Desktop/C/FlappyBird/main.c
 stdio.h
 -
+stdlib.h
+-
+string.h
+-
 raylib.h
 /Users/neneprm/Desktop/C/FlappyBird/raylib.h
 
