@@ -7,7 +7,7 @@
 // Defines Variables
 //------------------------------------------------------------------------------------
 
-#define MAX_PIPES 100
+#define MAX_PIPES 5
 #define DIST_PIPE 300
 
 //------------------------------------------------------------------------------------
@@ -52,8 +52,8 @@ typedef struct Pipe
     Texture2D topPipe;
     Texture2D bottomPipe;
 
-    Rectangle topPipeRec;       // Top pipe hitbox
-    Rectangle bottomPipeRec;    // Bottom pipe hitbox
+    Rectangle topPipeRec;
+    Rectangle bottomPipeRec;
 
     float x, topY, bottomY;
 
@@ -113,20 +113,31 @@ float topPipe_frameHeight;
 float bottomPipe_frameWidth;
 float bottomPipe_frameHeight;
 
+float topY_min;
+float topY_max;
+
+float max_x;
+
 //------------------------------------------------------------------------------------
 // Module Functions Declaration (local)
 //------------------------------------------------------------------------------------
 
-static void InitGame(void);     // Initialize game variables
-static void jump(void);         // Make character jumps
-static void drawGame(void);     // Draw graphics in the game
-static void updateGame(void);   // Update the game when a player runs the program
-static void loadTexture(void);  // Load game textures from image data: map, bird, pipe, etc.
-static void unloadTexture(void);// Unload game textures from memory
-static void loadSound(void);    // Load sound effects of the game
-static void unloadSound(void);  // Unload sound effects
-static void loadHiScore(void);  // Load high score
-static void recHiScore(void);   // Record new high score
+static void InitGame(void);         // Initialize game variables
+static void jump(void);             // Make character jumps
+static void drawGame(void);         // Draw graphics in the game
+static void updateGame(void);       // Update the game when a player runs the program
+
+static void loadTexture(void);      // Load game textures from image data: map, bird, pipe, etc.
+static void unloadTexture(void);    // Unload game textures from memory
+
+static void randomPipe(int i);      // Random pipes to different position
+
+static void loadSound(void);        // Load sound effects of the game
+static void unloadSound(void);      // Unload sound effects
+bool IsSoundPlaying(Sound sound);   // Check if a sound is playing
+
+static void loadHiScore(void);      // Load high score
+static void recHiScore(void);       // Record new high score
 
 //------------------------------------------------------------------------------------
 // Program Main Entry Point
@@ -170,16 +181,19 @@ int main()
 
 void InitGame(void)
 {
-    loadHiScore();
-    PlaySound(effect.bgMusic);
-
+    // Main game, Score, and Sound
+    //------------------------------------------
     gameStart = true;
     gameOver = false;
     gameRun = 0;
 
     score = 0;
     speed = 3.0;
+    loadHiScore();
+    PlaySound(effect.bgMusic);
 
+    // Map
+    //------------------------------------------
     map.backgroundY = -500;
     map.foregroundY = 630;
 
@@ -191,6 +205,8 @@ void InitGame(void)
     map.ceiling = 28.0f;
     map.ground = 625.0f;
 
+    // Bird
+    //------------------------------------------
     bird.frameWidth = (bird.birdSprite.width / 3);
 
     bird.x = 220.0f;
@@ -203,33 +219,22 @@ void InitGame(void)
     bird.acceleration = 0.0f;
     bird.gravity = 100.0f;
 
+    // Pipes
+    //------------------------------------------
     topPipe_frameWidth = (float) pipe[0].topPipe.width * 2.5;
     topPipe_frameHeight = (float) pipe[0].topPipe.height * 2.5;
 
     bottomPipe_frameWidth = (float) pipe[0].bottomPipe.width * 2.5;
     bottomPipe_frameHeight = (float) pipe[0].bottomPipe.height * 2.5;
 
-    float topY_min = -(topPipe_frameHeight) + 145.0f;
-    float topY_max = 0;
+    topY_min = -(topPipe_frameHeight) + 145.0f;
+    topY_max = 0;
 
+    // Generate Pipes
     for(int i = 0; i < MAX_PIPES; i++)
     {
         pipe[i].x = 900.0f + (DIST_PIPE * i);
-
-        pipe[i].topY = GetRandomValue(topY_min, topY_max);
-        pipe[i].bottomY = pipe[i].topY + 550.0f;
-
-        pipe[i].topPipeRec.x = pipe[i].x;
-        pipe[i].topPipeRec.y = pipe[i].topY;
-        pipe[i].topPipeRec.height = topPipe_frameHeight;
-        pipe[i].topPipeRec.width = topPipe_frameWidth;
-
-        pipe[i].bottomPipeRec.x = pipe[i].x;
-        pipe[i].bottomPipeRec.y = pipe[i].bottomY;
-        pipe[i].bottomPipeRec.height = bottomPipe_frameHeight;
-        pipe[i].bottomPipeRec.width = bottomPipe_frameWidth;
-
-        pipe[i].active = true;
+        randomPipe(i);
     }
 }
 
@@ -359,9 +364,11 @@ void updateGame(void)
     Rectangle topRec = {bird.x, -50, bird.frameWidth-10, map.foreground.height};
     Rectangle bottomRec = {bird.x, map.foregroundY, bird.frameWidth-10, map.foreground.height};
 
+    if (IsSoundPlaying(effect.bgMusic) == false) PlaySound(effect.bgMusic);
+
     if (!gameOver)
     {
-        // Map Scrolling, Character and Pipes Position
+        // Map Scrolling, Character and Pipe Position
         //------------------------------------------
         map.framesCounter++;
         if (map.framesCounter >= (60 / map.framesSpeed))
@@ -374,7 +381,9 @@ void updateGame(void)
             birdRec.x = (float) currentFrame * (float) bird.birdSprite.width / 3;
         }
 
-        if (!gameOver && IsKeyPressed(KEY_SPACE))       // Character jumps when Space Bar is pressed
+        // Character jumps and falls
+        //------------------------------------------
+        if (!gameOver && IsKeyPressed(KEY_SPACE))
         {
             bird.isJumping = 1;
             PlaySound(effect.jump);
@@ -392,8 +401,9 @@ void updateGame(void)
             if (bird.y < map.ground && bird.y > map.ceiling) jump();
         }
 
-        // Check for Collision
+        // Check for Collision and Regenerate pipes
         //------------------------------------------
+
         // Collision between the character and map's ground/ceiling
         if (CheckCollisionRecs(birdRec, topRec) || CheckCollisionRecs(birdRec, bottomRec))
         {
@@ -401,9 +411,19 @@ void updateGame(void)
             StopSound(effect.bgMusic);
             gameOver = true;
         }
-        // Collision between the character and top/bottom pipes
+
         for(int i = 0; i < MAX_PIPES; i++)
         {
+            // Regenerate pipes
+            if (pipe[i].x < -topPipe_frameWidth)
+            {
+                for( int j = 0; j < MAX_PIPES; j++ ) if ( pipe[j].x > max_x )max_x = pipe[j].x;     // Find maximum x of pipes
+                if ( pipe[i].x > max_x )max_x = pipe[i].x;
+                pipe[i].x = max_x + DIST_PIPE;
+                randomPipe(i);
+            }
+
+            // Collision between the character and pipes
             if ((CheckCollisionRecs(birdRec, pipe[i].topPipeRec) || CheckCollisionRecs(birdRec, pipe[i].bottomPipeRec)) && pipe[i].active)
             {
                 PlaySound(effect.hit);
@@ -488,6 +508,28 @@ void unloadTexture(void)
     UnloadTexture(gameOverSprite);
     UnloadTexture(scoreBoard);
     UnloadTexture(title);
+}
+
+//------------------------------------------------------------------------------------
+// Pipe Functions
+//------------------------------------------------------------------------------------
+
+void randomPipe(int i)
+{
+    pipe[i].topY = GetRandomValue(topY_min, topY_max);
+    pipe[i].bottomY = pipe[i].topY + 550.0f;
+
+    pipe[i].topPipeRec.x = pipe[i].x;
+    pipe[i].topPipeRec.y = pipe[i].topY;
+    pipe[i].topPipeRec.height = topPipe_frameHeight;
+    pipe[i].topPipeRec.width = topPipe_frameWidth;
+
+    pipe[i].bottomPipeRec.x = pipe[i].x;
+    pipe[i].bottomPipeRec.y = pipe[i].bottomY;
+    pipe[i].bottomPipeRec.height = bottomPipe_frameHeight;
+    pipe[i].bottomPipeRec.width = bottomPipe_frameWidth;
+
+    pipe[i].active = true;
 }
 
 //------------------------------------------------------------------------------------
