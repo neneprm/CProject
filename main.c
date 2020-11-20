@@ -149,6 +149,7 @@ int main()
     //------------------------------------------
     InitWindow(screenWidth, screenHeight, "Flappy Bird");
     InitAudioDevice();
+    HideCursor();
 
     loadTexture();
     loadSound();
@@ -160,8 +161,8 @@ int main()
     //------------------------------------------
     while (!WindowShouldClose())
     {
-        updateGame();
         drawGame();
+        updateGame();
     }
 
     // De-Initialization
@@ -276,7 +277,8 @@ void drawGame(void)
         DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + map.scrollingBack, map.backgroundY},
                       0.0f, 2.5f, WHITE);
 
-        if(gameStart && gameRun == 0) {
+        if(gameStart && gameRun == 0)
+        {
             DrawTextureEx(title, (Vector2) {screenWidth / 4.5, screenHeight / 4}, 0.0f, 3.0f, WHITE);
             DrawTextureEx(map.foreground, (Vector2) {map.scrollingFore, map.foregroundY}, 0.0f, 2.5f, WHITE);
             DrawTextureEx(map.foreground,
@@ -322,7 +324,6 @@ void drawGame(void)
     else
     {
         DrawTextureEx(map.background, (Vector2) {map.scrollingBack, map.backgroundY}, 0.0f, 2.5f, WHITE);
-        DrawTextureEx(map.background, (Vector2) {(float) map.background.width * 2 + map.scrollingBack, map.backgroundY},0.0f, 2.5f, WHITE);
 
         for (int i = 0; i < MAX_PIPES; i++)
         {
@@ -331,7 +332,6 @@ void drawGame(void)
         }
 
         DrawTextureEx(map.foreground, (Vector2) {map.scrollingFore, map.foregroundY}, 0.0f, 2.5f, WHITE);
-        DrawTextureEx(map.foreground, (Vector2) {(float) map.foreground.width * 2 + map.scrollingFore, map.foregroundY},0.0f, 2.5f, WHITE);
 
         DrawTexturePro(bird.birdSprite,(Rectangle) {currentFrame * bird.frameWidth, 0, bird.frameWidth, bird.birdSprite.height},
                        (Rectangle) {bird.x + (bird.x / 3), bird.y, bird.frameWidth, bird.birdSprite.height},
@@ -355,10 +355,6 @@ void updateGame(void)
 {
     // Local Variables
     //------------------------------------------
-    map.scrollingBack -= 0.1f;
-    map.scrollingFore -= 3.0f;
-    if (map.scrollingBack <= -(float) map.background.width * 2) map.scrollingBack = 0;
-    if (map.scrollingFore <= -(float) map.foreground.width * 2) map.scrollingFore = 0;
 
     Rectangle birdRec = {bird.x + 5, bird.y - bird.birdSprite.height + 15, bird.frameWidth - 10,bird.birdSprite.height - 10};
     Rectangle topRec = {bird.x, -50, bird.frameWidth-10, map.foreground.height};
@@ -370,6 +366,11 @@ void updateGame(void)
     {
         // Map Scrolling, Character and Pipe Position
         //------------------------------------------
+        map.scrollingBack -= 0.1f;
+        map.scrollingFore -= 3.0f;
+        if (map.scrollingBack <= -(float) map.background.width * 2) map.scrollingBack = 0;
+        if (map.scrollingFore <= -(float) map.foreground.width * 2) map.scrollingFore = 0;
+
         map.framesCounter++;
         if (map.framesCounter >= (60 / map.framesSpeed))
         {
@@ -430,7 +431,7 @@ void updateGame(void)
                 StopSound(effect.bgMusic);
                 gameOver = true;
             }
-            else if ((pipe[i].topPipeRec.x + pipe[i].topPipeRec.width < birdRec.x) && (pipe[i].bottomPipeRec.x + pipe[i].bottomPipeRec.width< bird.x) && !gameOver && pipe[i].active)
+            else if ((pipe[i].topPipeRec.x + pipe[i].topPipeRec.width < birdRec.x) && (pipe[i].bottomPipeRec.x + pipe[i].bottomPipeRec.width < bird.x) && !gameOver && pipe[i].active)
             {
                 PlaySound(effect.point);
                 score++;
